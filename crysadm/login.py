@@ -43,13 +43,23 @@ def old_login(username, md5_password):
             '"sdkVersion":177588,"protocolVersion":%s,"userName":"%s","extensionList":"","sequenceNo":%s,' \
             '"peerID":"%s","clientVersion":"1.0.0","appName":"ANDROID-com.xunlei.redcrystalandroid"}'
 
+    param = '{"cmdID":1,"isCompressed":0,"rsaKey":{"n":"AC69F5CCC8BDE47CD3D371603748378C9CFAD2938A6B0' \
+            '21E0E191013975AD683F5CBF9ADE8BD7D46B4D2EC2D78AF146F1DD2D50DC51446BB8880B8CE88D476694DFC60594393BEEFAA16F' \
+            '5DBCEBE22F89D640F5336E42F587DC4AFEDEFEAC36CF007009CCCE5C1ACB4FF06FBA69802A8085C2C54BADD0597FC83E6870F1E3' \
+            '6FD","e":"010001"},"businessType":%s,"passWord":"%s","loginType":0,"platformVersion":1,' \
+            '"devicesign":"div100.42d2cce3c17f50fb43d32e9c9b9cfc45b5fef1c5209adc97a0faba8215bd2103",' \
+            '"sdkVersion":177588,"protocolVersion":%s,"userName":"%s","extensionList":"","sequenceNo":%s,' \
+            '"peerID":"%s","clientVersion":"1.0.0","appName":"ANDROID-com.xunlei.redcrystalandroid"}'
+
     hash_password = hex(pow_mod(StrToInt(md5_password), exponent, modulus))[2:].upper().zfill(256)
 
     _chars = "0123456789ABCDEF"
 
     peer_id = ''.join(random.sample(_chars, 16))
 
-    param = param % (61, hash_password, 108, username, 1000003, peer_id)
+    #param = param % (61, hash_password, 108, username, 1000003, peer_id)
+    param = param % (61, hash_password, 108, username, 1000006, "")
+
 
     r = requests.post('https://login.mobile.reg2t.sandai.net', data=param, headers=agent_header, verify=False)
 

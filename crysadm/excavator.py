@@ -90,7 +90,7 @@ def collect_id(user_id):
         red_log('手动执行', '收取', user_id, '收取水晶成功.')
     account_data_key = account_key + ':data'
     account_data_value = json.loads(r_session.get(account_data_key).decode("utf-8"))
-    account_data_value.get('mine_info')['td_not_in_a'] = 0
+    account_data_value.get('mine_info')['td_not_in_a'] = 0   #设置未收取水晶为0
     r_session.set(account_data_key, json.dumps(account_data_value))
 
     return redirect(url_for('excavators'))
@@ -155,7 +155,7 @@ def getaward_id(user_id):
         red_log('手动执行', '转盘', user_id, '获得:%s' % regular_html(r.get('tip')))
     account_data_key = account_key + ':data'
     account_data_value = json.loads(r_session.get(account_data_key).decode("utf-8"))
-    account_data_value.get('mine_info')['td_not_in_a'] = 0
+    account_data_value.get('mine_info')['td_not_in_a'] = 0   #幸运转盘为啥要清空未收取水晶呢???????、
     r_session.set(account_data_key, json.dumps(account_data_value))
 
     return redirect(url_for('excavators'))
@@ -297,7 +297,7 @@ def drawcash_id(user_id):
         session['info_message'] = r.get('rd')
     account_data_key = account_key + ':data'
     account_data_value = json.loads(r_session.get(account_data_key).decode("utf-8"))
-    account_data_value.get('income')['r_can_use'] = 0
+    account_data_value.get('income')['r_can_use'] = 0  #清空存储里面的余额
     r_session.set(account_data_key, json.dumps(account_data_value))
 
     return redirect(url_for('excavators'))

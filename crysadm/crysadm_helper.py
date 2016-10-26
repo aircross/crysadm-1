@@ -73,7 +73,7 @@ def get_data(username):
 
             if account_data.get('updated_time') is not None:
                 last_updated_time = datetime.strptime(account_data.get('updated_time'), '%Y-%m-%d %H:%M:%S')
-                if last_updated_time.hour != datetime.now().hour:
+                if last_updated_time.hour != datetime.now().hour:  #如果上次更新时间跟现在的时间小时数不一样则重新获取一下,也就是说理论上每小时执行一次
                     account_data['zqb_speed_stat'] = get_speed_stat(cookies)
             else:
                 account_data['zqb_speed_stat'] = get_speed_stat(cookies)
@@ -131,7 +131,7 @@ def save_history(username):
         if b_data is None:
             continue
         data = json.loads(b_data.decode('utf-8'))
-
+        #如果迅雷账号的信息距现在不足1分钟则不处理,如果迅雷账号的信息跟现在不是一天也不处理
         if datetime.strptime(data.get('updated_time'), '%Y-%m-%d %H:%M:%S') + timedelta(minutes=1) < datetime.now() or \
                         datetime.strptime(data.get('updated_time'), '%Y-%m-%d %H:%M:%S').day != datetime.now().day:
             continue
@@ -262,15 +262,25 @@ def select_auto_task_user():
             if user_info.get('auto_revenge'): auto_revenge_accounts.append(cookies)
             if user_info.get('auto_getaward'): auto_getaward_accounts.append(cookies)
     r_session.delete('global:auto.collect.cookies')
+    #print (auto_collect_accounts)
+    #print (auto_drawcash_accounts)
+    #print (auto_giftbox_accounts)
     r_session.sadd('global:auto.collect.cookies', *auto_collect_accounts)
     r_session.delete('global:auto.drawcash.cookies')
-    r_session.sadd('global:auto.drawcash.cookies', *auto_drawcash_accounts)
+    if len(auto_drawcash_accounts)>0:
+
+        r_session.sadd('global:auto.drawcash.cookies', *auto_drawcash_accounts)
     r_session.delete('global:auto.giftbox.cookies')
     r_session.sadd('global:auto.giftbox.cookies', *auto_giftbox_accounts)
     r_session.delete('global:auto.searcht.cookies')
-    r_session.sadd('global:auto.searcht.cookies', *auto_searcht_accounts)
+    if len(auto_searcht_accounts) > 0:
+
+        r_session.sadd('global:auto.searcht.cookies', *auto_searcht_accounts)
     r_session.delete('global:auto.revenge.cookies')
-    r_session.sadd('global:auto.revenge.cookies', *auto_revenge_accounts)
+
+    if len(auto_revenge_accounts) > 0:
+
+        r_session.sadd('global:auto.revenge.cookies', *auto_revenge_accounts)
     r_session.delete('global:auto.getaward.cookies')
     r_session.sadd('global:auto.getaward.cookies', *auto_getaward_accounts)
 

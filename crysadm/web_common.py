@@ -139,7 +139,7 @@ def dashboard_speed_detail():
         for device_info in account_info.get('device_info'):
             if device_info.get('status') != 'online':
                 continue
-            upload_speed = int(int(device_info.get('dcdn_upload_speed')) / 1024)
+            upload_speed = int(int(device_info.get('dcdn_upload_speed')) / 1024)  #
             deploy_speed = int(device_info.get('dcdn_download_speed') / 1024)
 
             device_speed.append(dict(name=device_info.get('device_name'), upload_speed=upload_speed, deploy_speed=deploy_speed))
