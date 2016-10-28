@@ -8,6 +8,7 @@ import socket
 import struct
 
 # 获取前一日收益
+#这里获取的是以昨天为视角的累计月收益和累计日收益
 def __get_yesterday_pdc(username):
     today = datetime.now()
     month_start_date = datetime(year=today.year, month=today.month, day=1).date()
@@ -47,7 +48,7 @@ def dashboard():
 
     return render_template('dashboard.html', user_info=user_info)
 
-# 刷新控制面板数据
+# 刷新控制面板数据    首页倒数第二个图标  实时速度、 首页  上传速度    下载速度   今日水晶产量     本周水晶产量   本月水晶产量   上面的四个格子都是这个接口返回的
 @app.route('/dashboard_data')
 @requires_auth
 def dashboard_data():
@@ -79,8 +80,9 @@ def dashboard_data():
         today_data['yesterday_m_pdc'] = yesterday_m_pdc
         today_data['yesterday_w_pdc'] = yesterday_w_pdc
         need_save = True
-
+    #m_pdc  首页上方 本月水晶产量
     today_data['m_pdc'] = today_data.get('yesterday_m_pdc') + today_data.get('pdc')
+    #w_pdc  首页上方 本周水晶产量
     today_data['w_pdc'] = today_data.get('yesterday_w_pdc') + today_data.get('pdc')
 
     if need_save:
@@ -88,7 +90,7 @@ def dashboard_data():
 
     return Response(json.dumps(dict(today_data=today_data)), mimetype='application/json')
 
-# 刷新控制面板图表速度数据
+# 刷新控制面板图表速度数据       首页  速度分析器
 @app.route('/dashboard/speed_share')
 @requires_auth
 def dashboard_speed_share():
@@ -122,7 +124,7 @@ def dashboard_speed_share():
 
     return Response(json.dumps(dict(data=drilldown_data)), mimetype='application/json')
 
-# 显示控制面板速度详情
+# 显示控制面板速度详情   首页最下方的方块
 @app.route('/dashboard/speed_detail')
 @requires_auth
 def dashboard_speed_detail():
@@ -155,7 +157,7 @@ def dashboard_speed_detail():
 
     return Response(json.dumps(dict(categories=categories, series=[upload_series, deploy_series])), mimetype='application/json')
 
-# 刷新今日收益
+# 刷新今日收益     首页 产量分析器
 @app.route('/dashboard/today_income_share')
 @requires_auth
 def dashboard_today_income_share():
@@ -176,10 +178,13 @@ def dashboard_today_income_share():
 
     return Response(json.dumps(dict(data=pie_data)), mimetype='application/json')
 
-# 同比产量
+# 同比产量  首页  同比产量       昨日同比产量   昨日总产量  今日预计产量
 @app.route('/dashboard/DoD_income')
 @requires_auth
 def dashboard_DoD_income():
+    #last_day_income    昨日总产量
+    #dod_income_value   昨日同比产量
+    #expected_income    今日预计产量
     user = session.get('user_info')
     username = user.get('username')
     user_key = 'user:%s' % username
@@ -231,8 +236,8 @@ def DoD_income_yuanjiangong():
 
     for i in range(0, 24):
         if yesterday_speed_data is not None:
-            yesterday_speed_series['data'].append(sum(row.get('dev_speed')[i] for row in yesterday_speed_data))
-        if i + now.hour < 24:
+            yesterday_speed_series['data'].append(sum(row.get('dev_speed')[i] for row in yesterday_speed_data)) #某一个时间点 所有设备的速度相加
+        if i + now.hour < 24:  #因为接口返回的数据是离现在最近的24个小时的数据,所以需要取最近的那几条,比如  现在是5点多,则需要取最近的5条
             continue
 
         if today_speed_data is not None:
