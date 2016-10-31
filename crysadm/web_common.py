@@ -253,7 +253,7 @@ def DoD_income_yuanjiangong():
         if yesterday_data is not None:
             next_data = yesterday_data.get('%02d' % (i + 1))
             if yesterday_data.get('%02d' % (i + 1)) is not None:
-                yesterday_next_value = sum(row['pdc'] for row in next_data)
+                yesterday_next_value = sum(row['pdc'] for row in next_data)  #1点开始的某个点的所有迅雷账号的收益之和
             if yesterday_data.get(hour) is not None:
                 yesterday_value = sum(row['pdc'] for row in yesterday_data.get(hour))
             else:

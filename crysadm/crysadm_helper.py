@@ -72,6 +72,8 @@ def get_data(username):
                 account_data = json.loads(exist_account_data.decode('utf-8'))
 
             if account_data.get('updated_time') is not None:
+                #如果没有updated_time字段则直接获取zqb_speed_stat信息
+                #如果有则有频率的更新zqb_speed_stat信息
                 last_updated_time = datetime.strptime(account_data.get('updated_time'), '%Y-%m-%d %H:%M:%S')
                 if last_updated_time.hour != datetime.now().hour:  #如果上次更新时间跟现在的时间小时数不一样则重新获取一下,也就是说理论上每小时执行一次
                     account_data['zqb_speed_stat'] = get_speed_stat(cookies)
